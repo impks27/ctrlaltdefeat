@@ -60,12 +60,13 @@ async def on_message(message: cl.Message):
     message_history.append({"role": "assistant", "content": msg.content})
     await msg.update()
 
-@app.get("/hello")
-def hello(request: Request):
+@app.get("/esgreports/keepalive/ping")
+async def ping(request: Request):
     print(request.headers)
-    return HTMLResponse("Hello World")
+    return {"status": "success", "message": "Ping successful"}
 
-# @app.route('/upload-pdf', methods=['POST'])
+
+# @app.route('/esgreports/upload', methods=['POST'])
 # def upload_pdf(request):
 #     if 'files[]' not in request.files:
 #         return JsonResponse({'error': 'No files part'}, status=400)
