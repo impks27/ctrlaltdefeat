@@ -99,7 +99,11 @@ class ESGUtil:
             doc_search = Chroma.from_documents(texts,embeddings)
             #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint",model_kwargs={'engine':'gpt-35-turbo'}),chain_type='stuff', retriever = doc_search.as_retriever()))
 
-            chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint"),chain_type='stuff', retriever = doc_search.as_retriever(),return_source_documents=True, verbose=True) #search_type="similarity", search_kwargs={"k":2}, return_source_documents=True
+            chain = RetrievalQA.from_chain_type(
+                 llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
+                                 openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint",temperature=0.5),
+                                 chain_type='stuff', retriever = doc_search.as_retriever(),
+                                 return_source_documents=True, verbose=True) #search_type="similarity", search_kwargs={"k":2}, return_source_documents=True
 
             #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint = self.azure_endpoint, openai_api_version = self.openai_api_version, azure_deployment = self.azure_deployment), chain_type='stuff', retriever = doc_search.as_retriever())
 
@@ -149,7 +153,7 @@ class ESGUtil:
              content = {}
              for question in questionsList:
                 print("Question: "+question)
-                answer = self.getAnswer(question, file)
+                answer = self.getAnswer(question, texts)
                 #print("Answer: "+answer)
                 content[question] = answer;
              answerfile = "answer.pdf"
