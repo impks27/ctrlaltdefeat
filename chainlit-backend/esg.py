@@ -69,16 +69,16 @@ class ESGUtil:
             )
             texts = text_splitter.split_documents(documents)
 
-            loader = UnstructuredFileLoader("2022-annual-report.pdf")
-            documents = loader.load()
-            #text_splitter = CharacterTextSplitter(chunk_size=300, chunk_overlap=30)
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=300,
-                chunk_overlap=30, 
-                separators=["\n\n", "\n", " ", ""]
-            )
-            texts1 = text_splitter.split_documents(documents)
-            texts += texts1
+            #loader = UnstructuredFileLoader("2022-annual-report.pdf")
+            #documents = loader.load()
+            ##text_splitter = CharacterTextSplitter(chunk_size=300, chunk_overlap=30)
+            #text_splitter = RecursiveCharacterTextSplitter(
+            #    chunk_size=300,
+            #    chunk_overlap=30, 
+            #    separators=["\n\n", "\n", " ", ""]
+            #)
+            #texts1 = text_splitter.split_documents(documents)
+            #texts += texts1
             return texts
         
         # Method to get answer for a given question
@@ -146,7 +146,7 @@ class ESGUtil:
             c.drawText(textobject)
             c.save();
 
-        def getAnswerforQuestionnaire(self, file):
+        def getAnswerforQuestionnaire(self, file, texts):
              questionsList = self.getAllQuestionsFromPDF(file)
              print("Questions:")
              print(questionsList)
@@ -177,4 +177,5 @@ obj = ESGUtil()
 #print(f"PDF file '{file_name}' created successfully.")
 #obj.getAnswerforQuestionnaire("Survey-Questionnire-Part3.pdf");
 texts = obj.getAllSplitTexts()
-obj.getAnswer('Describe how COVID-19 has impacted the world', texts)
+#obj.getAnswer('Describe how COVID-19 has impacted the world', texts)
+obj.getAnswerforQuestionnaire("Survey-Questionnire-Part3.pdf", texts)
