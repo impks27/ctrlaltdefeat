@@ -37,7 +37,7 @@ os.environ["AZURE_OPENAI_API_KEY"] = OPENAI_API_KEY
 load_dotenv()
 '''
 
-loader = UnstructuredFileLoader('2021-annual-report.pdf')
+loader = UnstructuredFileLoader('Survey-Questionnire-Part1.pdf')
 documents = loader.load()
 
 

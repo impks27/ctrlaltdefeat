@@ -16,11 +16,11 @@ from dotenv import load_dotenv
 
 class ESGUtil:
         def __init__(self):
-                  load_dotenv()
                   self.azure_endpoint = r"https://openaisatheesh.openai.azure.com/"
                   self.azure_deployment = "openapiembeddings"
                   self.openai_api_version = "2024-02-15-preview"
                   os.environ["AZURE_OPENAI_API_KEY"] = "a31b5dcb986d4480a067344fdd352814"
+                  load_dotenv()
 
         # Method to get all questions for a pdf
         def getAllQuestionFromPDF(self, file):
@@ -71,21 +71,27 @@ class ESGUtil:
 
             #embeddings = OpenAIEmbeddings(model="openapiendpoint")
             embeddings = AzureOpenAIEmbeddings(
-                azure_endpoint = self.azure_endpoint, #r"https://openaisatheesh.openai.azure.com/",
-                azure_deployment = self.azure_deployment, #"openapiembeddings",
-                openai_api_version = self.openai_api_version #"2024-02-15-preview",
+                azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
+                azure_deployment="openapiembeddings",
+                openai_api_version="2024-02-15-preview"
+                #azure_endpoint = self.azure_endpoint, #r"https://openaisatheesh.openai.azure.com/",
+                #azure_deployment = self.azure_deployment, #"openapiembeddings",
+                #openai_api_version = self.openai_api_version #"2024-02-15-preview",
             )
 
 
             doc_search = Chroma.from_documents(texts,embeddings)
             #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint",model_kwargs={'engine':'gpt-35-turbo'}),chain_type='stuff', retriever = doc_search.as_retriever()))
 
-            chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint = self.azure_endpoint, openai_api_version = self.openai_api_version, azure_deployment = self.azure_deployment), chain_type='stuff', retriever = doc_search.as_retriever())
+            chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint"),chain_type='stuff', retriever = doc_search.as_retriever())
+
+            #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint = self.azure_endpoint, openai_api_version = self.openai_api_version, azure_deployment = self.azure_deployment), chain_type='stuff', retriever = doc_search.as_retriever())
 
             #query = 'Describe how COVID-19 has impacted the world'
+            print("Getting answer for question: "+question)
             print(chain.run(question))
  
 obj = ESGUtil()
 obj.getAllQuestionFromPDF('Survey-Questionnire-Part3.pdf');
 
-obj.getAnswer('Describe how COVID-19 has impacted the world', 'Survey-Questionnire-Part3.pdf')
+obj.getAnswer('Describe how COVID-19 has impacted the world', 'Survey-Questionnire-Part1.pdf')
