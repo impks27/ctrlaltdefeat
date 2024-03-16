@@ -34,13 +34,13 @@ const PdfUploadComponent: React.FC = () => {
       rows.flat().forEach((pdfFile, index) => {
         formData.append(`pdf${index}`, pdfFile.file);
       });
-      const response = await fetch("https://127.0.0.1:8000/upload-pdf", {
+      /*const response = await fetch("https://127.0.0.1:8000/upload-pdf", {
         method: "POST",
         body: formData,
       });
       if (!response.ok) {
         throw new Error("Failed to upload PDF files");
-      }
+      }*/
       setRows([[]]);
       setErrorMessage("");
       console.log("PDF files uploaded successfully");
