@@ -80,18 +80,23 @@ async def ping(request: Request):
     print(request.headers)
     return {"status": "success", "message": "Ping successful"}
 
+class Item(BaseModel):
+    inputQuestion: str
+    reportYear: str
+
 @app.post("/questionnaire/generatefirstdraft/generateAnswer")
-async def generateAnswer(request: Request):
-    print(request.headers)
+async def generateAnswer(item: Item):
+    print(item)
+    print(dir(item))
     obj = esg.ESGUtil();
-    reportYear = ""
-    inputQuestion = ""
-    obj.generateAnswer(reportYear,inputQuestion)
+    reportYear = item.reportYear
+    inputQuestion = item.inputQuestion
+    response = obj.generateAnswer(reportYear,inputQuestion)
     return {
-  "reportYear": "string",
+  "reportYear": reportYear,
   "questionnireSummary": {
-    "response": "string",
-    "status": "string",
+    "response": response,
+    "status": "Success",
     "citation": "string",
     "documentReference": "string",
     "accuracy": "string",

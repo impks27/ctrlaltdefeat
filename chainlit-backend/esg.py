@@ -57,9 +57,9 @@ class ESGUtil:
             print(questionsList)
             return questionsList
 
-        def getAllSplitTexts(self):
+        def getAllSplitTexts(self, filepath):
             print("Invoked getAllSplitTexts")
-            loader = UnstructuredFileLoader("2021-annual-report.pdf")
+            loader = UnstructuredFileLoader(filepath)
             documents = loader.load()
             #text_splitter = CharacterTextSplitter(chunk_size=300, chunk_overlap=30)
             text_splitter = RecursiveCharacterTextSplitter(
@@ -83,7 +83,18 @@ class ESGUtil:
         
         def generateAnswer(self, reportYear, inputQuestion):
              print("Invoked generateAnswer")
+             filepath = "uploaded_files/"+ reportYear + "/"
+             print(filepath)
+             filesList=os.listdir(filepath)
+             print(filesList)
+             texts = []
+             for file in filesList:
+                texts += self.getAllSplitTexts(filepath + file);
              
+             response = self.getAnswer(inputQuestion, texts);
+             return response
+                  
+
 
         # Method to get answer for a given question
         def getAnswer(self, question, texts):
@@ -114,7 +125,10 @@ class ESGUtil:
             #query = 'Describe how COVID-19 has impacted the world'
             print("Getting answer for question: "+question)
             #print(chain.run(question))
-            print(chain({"query": question}, return_only_outputs=True))
+            result = chain({"query": question}, return_only_outputs=True)
+            print(result)
+
+            return result
         
         # Method to get answer for a given question - index
         def getAnswerIndex(self, question, file):
