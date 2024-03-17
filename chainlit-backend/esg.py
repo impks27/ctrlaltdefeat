@@ -8,11 +8,16 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.llms import AzureOpenAI
+from langchain import PromptTemplate
 from langchain_openai import AzureOpenAIEmbeddings
 from dotenv import load_dotenv
 from langchain.indexes import VectorstoreIndexCreator
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain_community.retrievers import AzureCognitiveSearchRetriever
+from langchain_core.prompts import PromptTemplate
 
 # Method to get answer for a question
 
@@ -110,22 +115,67 @@ class ESGUtil:
                 #openai_api_version = self.openai_api_version #"2024-02-15-preview",
             )
 
+            template = '''
+            If you don't know the answer, just say that you don't know.
+            Don't try to make up an answer.
+            
+            {context}
+
+            Question: {question}
+            Answer:
+            '''
+            #Create a final answer with references ("SOURCES").
+            
+            prompt_template = """You are a helpful assistant for questions.
+            Understand user intention and provide the layman response.
+            If you don't know the answer, just say that you don't know.
+            Don't try to make up an answer.
+            {context}
+            Question: {question}
+            Answer here:"""
+            PROMPT = PromptTemplate(
+                template=prompt_template, input_variables=["context", "question"]
+            )
+            #prompt = PromptTemplate(
+                #template=template, 
+                #input_variables=[
+                #    'context', 
+                #    'question',
+                #]
+            #)
 
             doc_search = Chroma.from_documents(texts,embeddings)
             #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint",model_kwargs={'engine':'gpt-35-turbo'}),chain_type='stuff', retriever = doc_search.as_retriever()))
 
-            chain = RetrievalQA.from_chain_type(
-                 llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
-                                 openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint",temperature=0.5),
-                                 chain_type='stuff', retriever = doc_search.as_retriever(),
-                                 return_source_documents=True, verbose=True) #search_type="similarity", search_kwargs={"k":2}, return_source_documents=True
+            memory = ConversationBufferMemory(
+                memory_key="chat_history", return_messages=True, output_key="answer"
+            )
+
+            #retriever = AzureCognitiveSearchRetriever(content_key="content", top_k=10)
+            
+            chain = ConversationalRetrievalChain.from_llm(
+                llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
+                openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint", temperature=0.7),
+                memory=memory,
+                retriever= doc_search.as_retriever(),
+                combine_docs_chain_kwargs={"prompt": PROMPT},
+                return_source_documents=True
+            )
+
+
+            #chain = RetrievalQA.from_chain_type(
+            #     llm=AzureOpenAI(azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
+            #                     openai_api_version="2024-02-15-preview",azure_deployment="openapiendpoint"), #,temperature=0.5
+            #                     chain_type='stuff', retriever = doc_search.as_retriever(),
+            #                     return_source_documents=True, verbose=True) #, chain_type_kwargs={"prompt": prompt} #search_type="similarity", search_kwargs={"k":2}, return_source_documents=True
 
             #chain = RetrievalQA.from_chain_type(llm=AzureOpenAI(azure_endpoint = self.azure_endpoint, openai_api_version = self.openai_api_version, azure_deployment = self.azure_deployment), chain_type='stuff', retriever = doc_search.as_retriever())
 
             #query = 'Describe how COVID-19 has impacted the world'
             print("Getting answer for question: "+question)
             #print(chain.run(question))
-            result = chain({"query": question}, return_only_outputs=True)
+            #result = chain.run(question=question)
+            result = chain({"question": question}, return_only_outputs=True) #query
             print(result)
 
             return result

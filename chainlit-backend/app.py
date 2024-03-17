@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from chainlit.auth import create_jwt
 from chainlit.server import app
 import chainlit as cl
+import esg
 
 from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
