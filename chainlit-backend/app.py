@@ -86,7 +86,7 @@ async def upload_esg_reports(documentName: List[UploadFile] = File(...),
     print(len(documentName))
     try:
         # Generate a unique tracker id for each file
-        tracker_id = "adkjfalsoueir62386"
+        tracker_id = "adkjfalsoueir62386" // TODO 
 
         # Create the 'uploaded_files' directory if it doesn't exist
         os.makedirs("uploaded_files", exist_ok=True)
