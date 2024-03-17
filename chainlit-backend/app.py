@@ -39,7 +39,7 @@ class RetrieveESGReportsResponse(BaseModel):
 # Define metadata_cache as an array of UploadedDocument
 metadata_cache: List[UploadedDocument] = []
 
-client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+#client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 settings = {
     "model": "gpt-3.5-turbo",
@@ -89,7 +89,7 @@ async def generateAnswer(item: Item):
   }
 }
 
-
+'''
 @cl.on_message
 async def on_message(message: cl.Message):
     message_history = cl.user_session.get("message_history")
@@ -108,7 +108,7 @@ async def on_message(message: cl.Message):
 
     message_history.append({"role": "assistant", "content": msg.content})
     await msg.update()
-
+'''
 @app.get("/esgreports/keepalive/ping")
 async def ping(request: Request):
     print(request.headers)
