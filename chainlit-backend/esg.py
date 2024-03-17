@@ -110,9 +110,6 @@ class ESGUtil:
                 azure_endpoint=r"https://openaisatheesh.openai.azure.com/",
                 azure_deployment="openapiembeddings",
                 openai_api_version="2024-02-15-preview"
-                #azure_endpoint = self.azure_endpoint, #r"https://openaisatheesh.openai.azure.com/",
-                #azure_deployment = self.azure_deployment, #"openapiembeddings",
-                #openai_api_version = self.openai_api_version #"2024-02-15-preview",
             )
 
             template = '''

@@ -23,7 +23,7 @@ const ReportDisplayComponent: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8000/esgreports/retrieve",
+        "http://localhost:8080/esgreports/retrieve",
         {
           method: "POST",
           headers: {

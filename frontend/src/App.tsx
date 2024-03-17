@@ -8,7 +8,7 @@ import {
 import { useRecoilValue } from "recoil";
 import HomeComponent from "./components/HomeComponent";
 
-const CHAINLIT_SERVER = "http://localhost:8000";
+const CHAINLIT_SERVER = "http://localhost:8080";
 const userEnv = {};
 
 const apiClient = new ChainlitAPI(CHAINLIT_SERVER);
