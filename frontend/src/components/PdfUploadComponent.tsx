@@ -3,17 +3,18 @@ import React, { useState } from "react";
 interface PdfFile {
   file: File;
   documentURL: string;
+  yearOfReport: string; // Include yearOfReport in PdfFile interface
 }
 
 const PdfUploadComponent: React.FC = () => {
   const [rows, setRows] = useState<PdfFile[][]>([[]]);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [yearOfReport, setYearOfReport] = useState<string>("");
 
   const handleFileChange = (
     rowIndex: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    e.preventDefault();
     const files = Array.from(e.target.files || []);
     const errorMessage = files.some((file) => file.type !== "application/pdf")
       ? "Please select only PDF files."
@@ -23,6 +24,7 @@ const PdfUploadComponent: React.FC = () => {
       newRows[rowIndex] = files.map((file) => ({
         file,
         documentURL: "",
+        yearOfReport: "", // Initialize yearOfReport for each file
       }));
       return newRows;
     });
@@ -33,29 +35,33 @@ const PdfUploadComponent: React.FC = () => {
     setRows((prevRows) => [...prevRows, []]);
   };
 
-  const handleYearOfReportChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setYearOfReport(e.target.value);
-  };
-
   const handleUpload = async () => {
+    if (rows.flat().some((pdf) => !pdf.yearOfReport.trim())) {
+      setErrorMessage("Please enter Year of Report for all files.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       rows.flat().forEach((pdfFile, index) => {
         formData.append(`documentName`, pdfFile.file); // Correct field name
         formData.append(`DocumentURL`, pdfFile.documentURL); // Correct field name
+        formData.append(`YearOfReport`, pdfFile.yearOfReport); // Append YearOfReport for each file
       });
-      formData.append("YearOfReport", yearOfReport); // Append YearOfReport once
+
       const response = await fetch("http://127.0.0.1:8000/esgreports/upload", {
         method: "POST",
         body: formData,
       });
+
       if (!response.ok) {
         throw new Error("Failed to upload PDF files");
       }
+
       setRows([[]]);
       setErrorMessage("");
-      setYearOfReport("");
       console.log("PDF files uploaded successfully");
+      alert("PDF files uploaded successfully");
     } catch (error) {
       console.error("Error uploading PDF files:", error);
       setErrorMessage("Failed to upload PDF files");
@@ -64,15 +70,6 @@ const PdfUploadComponent: React.FC = () => {
 
   return (
     <div className="p-4">
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Enter Year of Report"
-          value={yearOfReport}
-          onChange={handleYearOfReportChange}
-          className="mb-2"
-        />
-      </div>
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} className="mb-4">
           <input
@@ -94,6 +91,20 @@ const PdfUploadComponent: React.FC = () => {
                   const newRows = [...rows];
                   newRows[rowIndex][fileIndex].documentURL = e.target.value;
                   setRows(newRows);
+                  setErrorMessage("");
+                }}
+                className="ml-2 mr-2"
+              />
+              <input
+                required
+                type="text"
+                placeholder="Year of Report" // Add placeholder for yearOfReport
+                value={pdf.yearOfReport}
+                onChange={(e) => {
+                  const newRows = [...rows];
+                  newRows[rowIndex][fileIndex].yearOfReport = e.target.value;
+                  setRows(newRows);
+                  setErrorMessage("");
                 }}
                 className="ml-2 mr-2"
               />
