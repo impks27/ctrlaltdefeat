@@ -28,7 +28,7 @@ app.add_middleware(
 # cache to store metadata
 metadata_cache = {}
 
-client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+#client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 settings = {
     "model": "gpt-3.5-turbo",
@@ -53,7 +53,7 @@ async def on_chat_start():
     )
     await cl.Message(content="Connected to Chainlit!").send()
 
-
+'''
 @cl.on_message
 async def on_message(message: cl.Message):
     message_history = cl.user_session.get("message_history")
@@ -72,6 +72,7 @@ async def on_message(message: cl.Message):
 
     message_history.append({"role": "assistant", "content": msg.content})
     await msg.update()
+'''
 
 @app.get("/esgreports/keepalive/ping")
 async def ping(request: Request):
@@ -86,7 +87,7 @@ async def upload_esg_reports(documentName: List[UploadFile] = File(...),
     print(len(documentName))
     try:
         # Generate a unique tracker id for each file
-        tracker_id = "adkjfalsoueir62386" // TODO 
+        tracker_id = "adkjfalsoueir62386" # TODO 
 
         # Create the 'uploaded_files' directory if it doesn't exist
         os.makedirs("uploaded_files", exist_ok=True)
