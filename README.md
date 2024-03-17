@@ -4,7 +4,7 @@ title: "Custom frontend with Chainlit!"
 
 # Custom frontend with Chainlit!
 
-## Install Chainlit and OpenAI
+## Install Chainlit and Azure OpenAI
 
 ```shell
 pip install -U chainlit openai
@@ -15,7 +15,7 @@ pip install -U chainlit openai
 Create a `./chainlit-backend/.env` file:
 
 ```.env
-OPENAI_API_KEY=YOUR_KEY
+
 ```
 
 Start the server in headless mode:
