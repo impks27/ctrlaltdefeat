@@ -27,7 +27,6 @@ class ESGUtil:
                   self.azure_endpoint = r"https://openaisatheesh.openai.azure.com/"
                   self.azure_deployment = "openapiembeddings"
                   self.openai_api_version = "2024-02-15-preview"
-                  os.environ["AZURE_OPENAI_API_KEY"] = "a31b5dcb986d4480a067344fdd352814"
                   load_dotenv()
 
         # Method to get all questions for a pdf
@@ -181,8 +180,6 @@ class ESGUtil:
         def getAnswerIndex(self, question, file):
             print("Invoked getAnswer. index")
             loader = UnstructuredFileLoader(file)
-            os.environ["AZURE_OPENAI_API_KEY"] = "a31b5dcb986d4480a067344fdd352814"
-            os.environ['OPENAI_API_KEY'] = 'dummy_key'
             index_creator = VectorstoreIndexCreator(
                 vectorstore_cls=Chroma,
                 embedding=AzureOpenAIEmbeddings(
