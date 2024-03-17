@@ -81,6 +81,10 @@ class ESGUtil:
             #texts += texts1
             return texts
         
+        def generateAnswer(self, reportYear, inputQuestion):
+             print("Invoked generateAnswer")
+             
+
         # Method to get answer for a given question
         def getAnswer(self, question, texts):
             print("Invoked getAnswer")
@@ -161,8 +165,8 @@ class ESGUtil:
 
 
 
-obj = ESGUtil()
-obj.getAllQuestionsFromPDF('Survey-Questionnire-Part3.pdf');
+#obj = ESGUtil()
+#obj.getAllQuestionsFromPDF('Survey-Questionnire-Part3.pdf');
 
 #obj.getAnswer('Describe how COVID-19 has impacted the world', 'Survey-Questionnire-Part1.pdf')
 

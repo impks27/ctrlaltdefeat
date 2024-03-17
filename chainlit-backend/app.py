@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from chainlit.auth import create_jwt
 from chainlit.server import app
 import chainlit as cl
+import esg
 
 from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -78,6 +79,25 @@ async def on_message(message: cl.Message):
 async def ping(request: Request):
     print(request.headers)
     return {"status": "success", "message": "Ping successful"}
+
+@app.post("/questionnaire/generatefirstdraft/generateAnswer")
+async def generateAnswer(request: Request):
+    print(request.headers)
+    obj = esg.ESGUtil();
+    reportYear = ""
+    inputQuestion = ""
+    obj.generateAnswer(reportYear,inputQuestion)
+    return {
+  "reportYear": "string",
+  "questionnireSummary": {
+    "response": "string",
+    "status": "string",
+    "citation": "string",
+    "documentReference": "string",
+    "accuracy": "string",
+    "confidenceScores": "string"
+  }
+}
 
 
 @app.post("/esgreports/upload")
