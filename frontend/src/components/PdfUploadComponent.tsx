@@ -49,7 +49,7 @@ const PdfUploadComponent: React.FC = () => {
         formData.append(`YearOfReport`, pdfFile.yearOfReport); // Append YearOfReport for each file
       });
 
-      const response = await fetch("http://127.0.0.1:8080/esgreports/upload", {
+      const response = await fetch("http://127.0.0.1:8000/esgreports/uploadfile", {
         method: "POST",
         body: formData,
       });
