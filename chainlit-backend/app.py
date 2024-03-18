@@ -1,6 +1,7 @@
 import os
 # import uuid
 from openai import AsyncOpenAI
+import json
 
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -94,7 +95,7 @@ async def ping(request: Request):
     return {"status": "success", "message": "Ping successful"}
 
 
-@app.post("/esgreports/retrieve", response_model=RetrieveESGReportsResponse)
+@app.post("/esgreports/retrievefile", response_model=RetrieveESGReportsResponse)
 async def retrieve_esg_reports(request: RetrieveESGReportsRequest):
     try:
         report_year = request.reportYear
@@ -103,12 +104,13 @@ async def retrieve_esg_reports(request: RetrieveESGReportsRequest):
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
     
-@app.post("/esgreports/retrievefile")
+@app.post("/esgreports/retrieve")
 async def retrieve_esg_reportsfile(request: RetrieveESGReportsRequest):
+    print("Invoke retrieve_esg_reportsfile")
     print(request.reportYear)
     obj = upload.BlobUtil();
-    url = obj.get_blob_url("2021-annual-report")
-    print(url)
+    result = obj.get_blob_by_metadata(request.reportYear)
+    return JSONResponse(content=result)
 
 @app.post("/esgreports/upload")
 async def upload_esg_reportsfile(documentName: List[UploadFile] = File(...),
