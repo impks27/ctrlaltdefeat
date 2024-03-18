@@ -1,4 +1,5 @@
 # Importing necessary libraries from Azure Storage SDK
+import os
 from azure.storage.blob import BlobServiceClient
 
 class BlobUtil:
@@ -60,26 +61,45 @@ class BlobUtil:
         # Printing a confirmation message after successful upload
         print(f'File: {file.name} uploaded to destination: {destination_blob_name}')
 
-
-    # Function to generate URL for accessing a blob in Azure Blob Storage container
-    def get_blob_url(self, blob_name, report_year):
-        """
-        Generates a URL to access a blob in Azure Blob Storage container.
-        """
-
+    def download_blob_by_url(self, report_year):
+        print("Invoke download_blob_by_url")
         # Your Azure Storage Account connection string
         connection_string = "DefaultEndpointsProtocol=https;AccountName=ctrlaltdefeatstorage;AccountKey=6QcBlepAUMysjJu15Y9v8sfICUUovvZYaUNj8x6JiidFnYPzy6C8LnAcnDU5Ifyk3GqTaDeQRrHn+AStxWhtVA==;EndpointSuffix=core.windows.net"
         
         # Name of the container in Azure Blob Storage
         container_name = "ctrlaltdefeatpdfcontainer"
 
-        # Creating a BlobServiceClient object using the connection string
+         # Creating a BlobServiceClient object using the connection string
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
-        # Generating the URL for the specified blob
-        blob_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{container_name}/{blob_name}"
-        return blob_url
+        result = self.get_blob_by_metadata(report_year)
+        for document in result["documents"]:
+            metadata = document["metadata"]
+            url = metadata["referenceLink"]
 
+            blob_client = blob_service_client.get_blob_client(container=container_name, blob=document["documentName"]) #"uploaded_files/2029/2022-annual-report.pdf")
+            filepath = "uploaded_files/"
+            print(filepath)
+            if not os.path.exists(filepath):
+                os.mkdir(filepath)
+            with open(file=filepath+ self.split_and_take_last(document["documentName"]), mode="wb") as sample_blob:
+                download_stream = blob_client.download_blob()
+                data = download_stream.readall()
+                sample_blob.write(data)
+            #blob_service_client = BlobServiceClient.from_blob_url(url)
+            #blob_client = blob_service_client.get_blob_client()
+            #blob_client.download_blob() 
+            #blob_client = blob_service_client.get_blob_client(container=container_name)
+            #ith open(file=metadata["name"], mode="wb") as sample_blob:
+                #download_stream = blob_client.download_blob()
+                #sample_blob.write(download_stream.readall())
+
+    
+    def split_and_take_last(self, input_string):
+        parts = input_string.split("/")
+        last_part = parts[-1]
+        return last_part
+    
     def get_blob_by_metadata(self, report_year):
         print("Invoke get_blob_by_metadata")
         # Your Azure Storage Account connection string

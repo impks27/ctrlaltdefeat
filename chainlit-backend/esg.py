@@ -18,6 +18,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain_community.retrievers import AzureCognitiveSearchRetriever
 from langchain_core.prompts import PromptTemplate
+import upload
+import requests
+
 
 # Method to get answer for a question
 
@@ -87,8 +90,12 @@ class ESGUtil:
         
         def generateAnswer(self, reportYear, inputQuestion):
              print("Invoked generateAnswer")
-             filepath = "uploaded_files/"+ reportYear + "/"
+             self.downloadFiles(reportYear)
+             filepath = "uploaded_files/"
              print(filepath)
+             #if not os.path.exists(filepath):
+                  #os.mkdir(filepath)
+             
              filesList=os.listdir(filepath)
              print(filesList)
              texts = []
@@ -99,7 +106,11 @@ class ESGUtil:
              return response
                   
 
-
+        def downloadFiles(self, reportYear):
+            print("Invoke downloadFiles")
+            obj = upload.BlobUtil();
+            obj.download_blob_by_url(reportYear)          
+        
         # Method to get answer for a given question
         def getAnswer(self, question, texts):
             print("Invoked getAnswer")

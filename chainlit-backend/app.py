@@ -93,16 +93,6 @@ async def generateAnswer(item: Item):
 async def ping(request: Request):
     print(request.headers)
     return {"status": "success", "message": "Ping successful"}
-
-
-@app.post("/esgreports/retrievefile", response_model=RetrieveESGReportsResponse)
-async def retrieve_esg_reports(request: RetrieveESGReportsRequest):
-    try:
-        report_year = request.reportYear
-        retrieved_documents = [UploadedDocument(**doc.dict()) for doc in metadata_cache if doc.metadata["reportYear"] == report_year]
-        return RetrieveESGReportsResponse(documents=retrieved_documents)
-    except Exception as e:
-        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
     
 @app.post("/esgreports/retrieve")
 async def retrieve_esg_reportsfile(request: RetrieveESGReportsRequest):
