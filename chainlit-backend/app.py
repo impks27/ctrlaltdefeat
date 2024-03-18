@@ -113,22 +113,25 @@ async def retrieve_esg_reportsfile(request: RetrieveESGReportsRequest):
 @app.post("/esgreports/upload")
 async def upload_esg_reportsfile(documentName: List[UploadFile] = File(...),
                              DocumentURL: List[str] = "DocumentURL",
-                             #DocumentURL: Optional[List[str]] = Form(...),
-                             YearOfReport: List[str] = Form(...)):
+                             YearOfReport: str = Form(...) ):
         print("Invoke upload_esg_reportsfile")
+        print("YearOfReport: "+ YearOfReport)
+        print(documentName)
         # Process each uploaded file
         for file in documentName:
+            print("file")
+            print(file)
             # Create the 'uploaded_files' directory if it doesn't exist
-            os.makedirs("uploaded_files/" + YearOfReport[documentName.index(file)], exist_ok=True)
+            os.makedirs("uploaded_files/" + YearOfReport, exist_ok=True)
             # Save the file in the 'uploaded_files' folder
-            file_path = os.path.join('uploaded_files/'+ YearOfReport[documentName.index(file)] , file.filename)
+            file_path = os.path.join('uploaded_files/'+ YearOfReport , file.filename)
             with open(file_path, 'wb') as buffer:
                 buffer.write(await file.read())
-        print("filename: "+ 'uploaded_files/'+ YearOfReport[documentName.index(file)]+ "/" + documentName[0].filename)
-        with open('uploaded_files/'+ YearOfReport[documentName.index(file)]+ "/" + documentName[0].filename, 'rb') as file:
-            # Pass the file object to the function
-            obj = upload.BlobUtil()
-            url = obj.upload_blob(file)
+            print("filename: "+ 'uploaded_files/'+ YearOfReport+ "/" + file.filename)
+            with open('uploaded_files/'+ YearOfReport + "/" + file.filename, 'rb') as file1:
+                # Pass the file object to the function
+                obj = upload.BlobUtil()
+                url = obj.upload_blob(file1, YearOfReport)
         
         return JSONResponse(content={"status": "Success", "message": "Document(s) Uploaded Successfully", "tracker_id": "uid1001"})
         
